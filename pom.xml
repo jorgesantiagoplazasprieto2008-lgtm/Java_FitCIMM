@@ -7,6 +7,7 @@
     <groupId>org.example</groupId>
     <artifactId>FitCIMM</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <packaging>war</packaging>
 
     <properties>
         <maven.compiler.source>26</maven.compiler.source>
@@ -20,7 +21,7 @@
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
-            <version>12.8.1.jre11</version>
+            <version>13.2.1.jre11</version>
         </dependency>
 
         <!-- Jakarta Servlet -->
@@ -29,6 +30,18 @@
             <artifactId>jakarta.servlet-api</artifactId>
             <version>6.0.0</version>
             <scope>provided</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>jakarta.servlet.jsp.jstl</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>jakarta.servlet.jsp.jstl</artifactId>
+            <version>3.0.1</version>
         </dependency>
 
         <!-- JSTL -->
@@ -47,5 +60,4 @@
         </dependency>
 
     </dependencies>
-
 </project>

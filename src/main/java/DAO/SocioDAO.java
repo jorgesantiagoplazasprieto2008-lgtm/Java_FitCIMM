@@ -1,18 +1,20 @@
 package DAO;
 
 import Modelo.Socio;
+import Util.*;
 
-import javax.xml.transform.Result;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SocioDAO {
 
-    public boolean RegistrarSocios(Socio socio) throws SQLException{
+    // RF 01
+    public void RegistrarSocios(Socio socio) throws SQLException {
         String query = "INSERT INTO socio(documento, nombres, apellidos, telefono, correo, fecha_nacimiento, activo) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection con = ConexionDB.obtenerConexion(); PreparedStatement PS = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection con = ConexionDB.obtenerConexion(); PreparedStatement PS = con.prepareStatement(query)) {
             PS.setString(1, socio.getDocumento());
             PS.setString(2, socio.getNombres());
             PS.setString(3, socio.getApellidos());
@@ -21,20 +23,12 @@ public class SocioDAO {
             PS.setDate(6, Date.valueOf(socio.getFechaNacimiento()));
             PS.setBoolean(7, socio.getActivo());
 
-            int filasAfectadas = PS.executeUpdate();
-            if (filasAfectadas > 0) {
-                try (ResultSet rs = PS.getGeneratedKeys())
-                {
-                    if (rs.next()) {
-                        socio.setIdSocio(rs.getInt(1));
-                    }
-                }
-                return true;
-            }
-            return false;
+            PS.executeUpdate();
         }
     }
-    public List<Socio> listarTodos() throws  SQLException {
+
+    // RF 02
+    public List<Socio> listarTodos() throws SQLException {
         List<Socio> socios = new ArrayList<>();
         String query = "SELECT id_socio, documento, nombres, apellidos, telefono, correo, fecha_nacimiento, activo FROM socio ORDER BY apellidos ASC";
         try (Connection con = ConexionDB.obtenerConexion(); PreparedStatement PS = con.prepareStatement(query); ResultSet rs = PS.executeQuery()) {
@@ -43,6 +37,95 @@ public class SocioDAO {
             }
         }
         return socios;
+    }
+
+    //RF 03
+    public Socio obtenerPorId(int idSocio) throws SQLException {
+        String query = "SELECT id_socio, documento, nombres, apellidos, telefono, correo, fecha_nacimiento, activo FROM socio WHERE id_socio = ?";
+        try (Connection con = ConexionDB.obtenerConexion();
+             PreparedStatement ps = con.prepareStatement(query)) {
+
+            ps.setInt(1, idSocio);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapearSocio(rs);
+                }
+            }
+        }
+        return null;
+    }
+
+    // RF 04
+    public boolean actualizar(Socio socio) throws SQLException {
+        String query = "UPDATE socio SET documento = ?, nombres = ?, apellidos = ?, telefono = ?, correo = ?, fecha_nacimiento = ?, activo = ? WHERE id_socio = ?";
+        try (Connection con = ConexionDB.obtenerConexion();
+             PreparedStatement ps = con.prepareStatement(query)) {
+
+            ps.setString(1, socio.getDocumento());
+            ps.setString(2, socio.getNombres());
+            ps.setString(3, socio.getApellidos());
+            ps.setString(4, socio.getTelefono());
+            ps.setString(5, socio.getCorreo());
+            ps.setDate(6, Date.valueOf(socio.getFechaNacimiento()));
+            ps.setBoolean(7, socio.getActivo());
+            ps.setInt(8, socio.getIdSocio());
+
+            return ps.executeUpdate() > 0;
+        }
+    }
+
+    //RF 05
+
+    public boolean inactivar(int idSocio) throws SQLException {
+        String query = "UPDATE socio SET activo = 0 WHERE id_socio = ?";
+        try (Connection con = ConexionDB.obtenerConexion();
+             PreparedStatement ps = con.prepareStatement(query)) {
+
+            ps.setInt(1, idSocio);
+            return ps.executeUpdate() > 0;
+        }
+    }
+
+    public boolean activar(int idSocio) throws SQLException {
+        String query = "UPDATE socio SET activo = 1 WHERE id_socio = ?";
+        try (Connection con = ConexionDB.obtenerConexion();
+             PreparedStatement ps = con.prepareStatement(query))  {
+            ps.setInt(1, idSocio);
+            return ps.executeUpdate() > 0;
+        }
+    }
+    //RF 06
+    public List<Socio> buscar(String criterio) throws SQLException {
+        List<Socio> socios = new ArrayList<>();
+        String query = "SELECT id_socio, documento, nombres, apellidos, telefono, correo, fecha_nacimiento, activo FROM socio " +
+                "WHERE (documento LIKE ? OR apellidos LIKE ?) AND activo = 1 ORDER BY apellidos ASC";
+        try (Connection con = ConexionDB.obtenerConexion();
+             PreparedStatement ps = con.prepareStatement(query)) {
+
+            String parametro = "%" + criterio + "%";
+            ps.setString(1, parametro);
+            ps.setString(2, parametro);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    socios.add(mapearSocio(rs));
+                }
+            }
+        }
+        return socios;
+    }
+
+    // EXTRAS / AYUDA
+
+    public boolean existeDocumento(String doc) throws SQLException {
+        String sql = "SELECT 1 FROM socio WHERE documento = ?";
+        try (Connection con = ConexionDB.obtenerConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, doc);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        }
     }
 
     private Socio mapearSocio(ResultSet rs) throws SQLException {
@@ -57,5 +140,5 @@ public class SocioDAO {
                 rs.getBoolean("activo")
         );
     }
-    }
+}
 
