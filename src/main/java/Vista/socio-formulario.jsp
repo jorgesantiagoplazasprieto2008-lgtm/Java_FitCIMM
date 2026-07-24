@@ -237,7 +237,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="ingresos?accion=pantalla">
                             <i class="bi bi-door-open-fill me-1"></i> Control de Ingresos
                         </a>
                     </li>
