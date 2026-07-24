@@ -55,6 +55,33 @@ public class SocioDAO {
         return null;
     }
 
+
+    public Socio buscarSocioPorDocumento(String documento) throws SQLException {
+        String sql = "SELECT id_socio, documento, nombres, apellidos, telefono, correo, fecha_nacimiento, activo FROM socio WHERE documento = ?";
+
+        try (Connection con = ConexionDB.obtenerConexion();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, documento);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Socio s = new Socio();
+                    s.setIdSocio(rs.getInt("id_socio"));
+                    s.setDocumento(rs.getString("documento"));
+                    s.setNombres(rs.getString("nombres"));
+                    s.setApellidos(rs.getString("apellidos"));
+                    s.setTelefono(rs.getString("telefono"));
+                    s.setCorreo(rs.getString("correo"));
+                    // Conversión directa a java.time.LocalDate
+                    s.setFechaNacimiento(rs.getDate("fecha_nacimiento").toLocalDate());
+                    s.setActivo(rs.getBoolean("activo"));
+                    return s;
+                }
+            }
+        }
+        return null;
+    }
     // RF 04
     public boolean actualizar(Socio socio) throws SQLException {
         String query = "UPDATE socio SET documento = ?, nombres = ?, apellidos = ?, telefono = ?, correo = ?, fecha_nacimiento = ?, activo = ? WHERE id_socio = ?";
