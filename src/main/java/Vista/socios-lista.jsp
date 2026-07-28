@@ -472,7 +472,7 @@
     <!-- Menú de Navegación Mejorado -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="socios?accion=listar">
                 <i class="bi bi-lightning-charge-fill me-2"></i>FitCIMM
             </a>
             <button class="navbar-dark navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -495,6 +495,11 @@
                             <i class="bi bi-door-open-fill me-1"></i> Control de Ingresos
                         </a>
                     </li>
+                     <li class="nav-item">
+                        <a class="nav-link" href="reportes">
+                            <i class="bi bi-briefcase-fill me-1"></i> Reportes
+                        </a>
+                     </li>
                 </ul>
             </div>
         </div>
@@ -606,6 +611,11 @@
                                 </td>
                                 <td class="text-center">
                                     <div class="btn-group" role="group">
+                                        <!-- Botón Ver Detalle (Redirige a la ficha técnica e historial) -->
+                                        <a href="socios?accion=ver&id=${socio.idSocio}" class="btn btn-sm btn-outline-info px-3 text-dark" title="Ver detalles e historial">
+                                           <i class="bi bi-eye-fill text-info"></i>
+                                        </a>
+
                                         <!-- Botón Editar (siempre visible) -->
                                         <a href="socios?accion=editar&id=${socio.idSocio}" class="btn btn-sm btn-outline-primary px-3" title="Editar socio">
                                             <i class="bi bi-pencil-square"></i>
@@ -653,7 +663,7 @@
         </div>
     </div>
 
-    <!-- Script de confirmación -->
+    <!-- Script de confirmación de funciones (Inactivar y Reactivar) -->
     <script>
            function confirmarInactivacion(id, nombre) {
                if (confirm("¿Está seguro de que desea inactivar al socio " + nombre + "? Esta acción realiza una baja lógica en el sistema.")) {

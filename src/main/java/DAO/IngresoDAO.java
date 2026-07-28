@@ -25,6 +25,11 @@ public class IngresoDAO {
                     ing.setIdIngreso(rs.getInt(1));
                 }
             }
+        } catch (SQLException e) {
+            if (e.getErrorCode() == 2627){
+                throw new SQLException("El socio ya registró su ingreso diario en la base de datos.", e);
+            }
+            throw e;
         }
     }
     // RN-06: Comprueba si el socio ya ingresó en el día de hoy
@@ -37,7 +42,7 @@ public class IngresoDAO {
             ps.setDate(2, Date.valueOf(fecha));
 
             try (ResultSet rs = ps.executeQuery()) {
-                return rs.next(); // Retorna true si ya existe una fila para hoy
+                return rs.next();
             }
         }
     }
