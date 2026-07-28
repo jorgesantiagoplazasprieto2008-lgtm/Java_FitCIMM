@@ -486,7 +486,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="planes?accion=listar">
                             <i class="bi bi-card-checklist me-1"></i> Planes
                         </a>
                     </li>
@@ -538,7 +538,7 @@
             <!-- Buscador y Filtros Mejorado -->
             <form action="socios" method="GET" class="row g-3 mb-4">
                 <input type="hidden" name="accion" value="listar">
-                <div class="col-md-8">
+                <div class="col-md-6">
                     <div class="search-box">
                         <div class="input-group">
                             <span class="input-group-text">
@@ -550,6 +550,11 @@
                             </button>
                         </div>
                     </div>
+                </div>
+                <div class="col-md-4 d-flex gap-2">
+                    <a href="socios?accion=porVencer" class="btn ${filtroActivo == 'porVencer' ? 'btn-warning' : 'btn-outline-warning text-dark'} w-100 fw-semibold d-flex align-items-center justify-content-center border-2 rounded-3">
+                        <i class="bi bi-exclamation-triangle-fill me-1 text-warning"></i>Por Vencer (5 días)
+                    </a>
                 </div>
                 <c:if test="${not empty criterio}">
                     <div class="col-md-2">

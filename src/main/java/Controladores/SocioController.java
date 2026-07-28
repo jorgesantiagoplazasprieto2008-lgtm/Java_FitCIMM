@@ -1,8 +1,8 @@
 package Controladores;
 
-import DAO.*;
 import Modelo.*;
-import Servicios.*;
+import Servicios.MembresiaService;
+import Servicios.SocioService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,8 +17,7 @@ import java.util.List;
 @WebServlet("/socios")
 public class SocioController extends HttpServlet {
     private final SocioService service = new SocioService();
-    private final MembresiaService Mservice = new MembresiaService();
-    private final MembresiaDAO MemDao = new MembresiaDAO();
+    private final MembresiaService membresiaService = new MembresiaService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -31,6 +30,9 @@ public class SocioController extends HttpServlet {
             switch (accion) {
                 case "listar":
                     listarSocios(req, resp);
+                    break;
+                case "porVencer":
+                    listarSociosPorVencer(req, resp);
                     break;
                 case "nuevo":
                     mostrarFormularioNuevo(req, resp);
@@ -52,7 +54,7 @@ public class SocioController extends HttpServlet {
                     break;
             }
         } catch (NumberFormatException e) {
-            req.setAttribute("error", "ID inválido. Verifique los datos de identificación.");
+            req.setAttribute("error", "ID inválido. Verifique los datos.");
             listarSocios(req, resp);
         } catch (Exception e) {
             manejarError(req, resp, e);
@@ -86,8 +88,6 @@ public class SocioController extends HttpServlet {
         }
     }
 
-    // ==================== MÉTODOS GET ====================
-
     private void listarSocios(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String criterio = req.getParameter("criterio");
         try {
@@ -102,17 +102,67 @@ public class SocioController extends HttpServlet {
             req.setAttribute("socios", lista);
             req.setAttribute("totalSocios", lista != null ? lista.size() : 0);
 
-            // Mensaje de éxito de redirecciones anteriores (si existen)
             String mensajeExito = (String) req.getSession().getAttribute("mensajeExito");
             if (mensajeExito != null) {
                 req.setAttribute("mensajeExito", mensajeExito);
-                req.getSession().removeAttribute("mensajeExito"); // Limpiar de la sesión
+                req.getSession().removeAttribute("mensajeExito");
             }
 
             req.getRequestDispatcher("/socios-lista.jsp").forward(req, resp);
         } catch (Exception e) {
             req.setAttribute("error", "Error al cargar la lista: " + e.getMessage());
             req.getRequestDispatcher("/socios-lista.jsp").forward(req, resp);
+        }
+    }
+
+    // RF-11: Listar socios con membresías por vencer en los próximos 5 días
+    private void listarSociosPorVencer(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        try {
+            List<Socio> lista = service.listarSociosPorVencer();
+            req.setAttribute("socios", lista);
+            req.setAttribute("totalSocios", lista != null ? lista.size() : 0);
+            req.setAttribute("filtroActivo", "porVencer");
+            req.getRequestDispatcher("/socios-lista.jsp").forward(req, resp);
+        } catch (Exception e) {
+            req.setAttribute("error", "Error al filtrar socios por vencer: " + e.getMessage());
+            listarSocios(req, resp);
+        }
+    }
+
+    private void verDetalleSocio(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String idParam = req.getParameter("id");
+        if (idParam == null || idParam.trim().isEmpty()) {
+            req.setAttribute("error", "ID de socio no proporcionado");
+            listarSocios(req, resp);
+            return;
+        }
+        try {
+            int id = Integer.parseInt(idParam.trim());
+            Socio socio = service.buscarPorId(id);
+
+            if (socio == null) {
+                req.setAttribute("error", "No se encontró el socio con ID: " + id);
+                listarSocios(req, resp);
+                return;
+            }
+
+            Membresia ultimaMembresia = membresiaService.obtenerUltimaPorSocio(id);
+            List<Membresia> historialMembresias = membresiaService.listarHistorialPorSocio(id);
+
+            String mensajeExito = (String) req.getSession().getAttribute("mensajeExito");
+            if (mensajeExito != null) {
+                req.setAttribute("mensajeExito", mensajeExito);
+                req.getSession().removeAttribute("mensajeExito");
+            }
+
+            req.setAttribute("socio", socio);
+            req.setAttribute("ultimaMembresia", ultimaMembresia);
+            req.setAttribute("historialMembresias", historialMembresias);
+
+            req.getRequestDispatcher("/socio-detalle.jsp").forward(req, resp);
+        } catch (Exception e) {
+            req.setAttribute("error", "Error al ver el detalle: " + e.getMessage());
+            listarSocios(req, resp);
         }
     }
 
@@ -161,7 +211,7 @@ public class SocioController extends HttpServlet {
 
         try {
             int id = Integer.parseInt(idParam.trim());
-            service.inactivar(id); // Lanza Exception interna si el socio no existe o ya está inactivo
+            service.inactivar(id);
             req.getSession().setAttribute("mensajeExito", "Socio inactivado correctamente (baja lógica)");
             resp.sendRedirect("socios?accion=listar");
         } catch (Exception e) {
@@ -180,7 +230,7 @@ public class SocioController extends HttpServlet {
 
         try {
             int id = Integer.parseInt(idParam.trim());
-            service.activar(id); // Llama a la lógica de activación
+            service.activar(id);
             req.getSession().setAttribute("mensajeExito", "Socio reactivado correctamente");
             resp.sendRedirect("socios?accion=listar");
         } catch (Exception e) {
@@ -189,49 +239,13 @@ public class SocioController extends HttpServlet {
         }
     }
 
-    private void verDetalleSocio(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String idParam = req.getParameter("id");
-        if (idParam == null || idParam.trim().isEmpty()) {
-            req.setAttribute("error", "ID de socio no proporcionado");
-            listarSocios(req, resp);
-            return;
-        }
-        try {
-            int id = Integer.parseInt(idParam.trim());
-            Socio socio = service.buscarPorId(id);
-
-            if (socio == null) {
-                req.setAttribute("error", "No se encontró el socio con ID: " + id);
-                listarSocios(req, resp);
-                return;
-            }
-
-            List<Membresia> historial = MemDao.listarHistorialPorSocio(id);
-            for(Membresia m : historial) {
-                m.setNombrePlan(m.getNombrePlan());
-            }
-
-
-            req.setAttribute("socio", socio);
-            req.setAttribute("historial", historial);
-            req.getRequestDispatcher("/socio-detalle.jsp").forward(req, resp);
-        } catch (Exception e) {
-            req.setAttribute("error", "Error al ver el detalle: " + e.getMessage());
-            listarSocios(req, resp);
-        }
-    }
-
-    // ==================== MÉTODOS POST ====================
-
     private void guardarSocio(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Socio socio = construirSocioDesdeRequest(req);
         try {
-            // Delega directamente la inserción y las validaciones al Service
             service.registrar(socio);
             req.getSession().setAttribute("mensajeExito", "Socio registrado correctamente");
             resp.sendRedirect("socios?accion=listar");
         } catch (Exception e) {
-            // El service arrojó un error de negocio (RN-01 o RN-09). Devolvemos el error a la vista.
             req.setAttribute("error", e.getMessage());
             req.setAttribute("socio", socio);
             req.setAttribute("modo", "nuevo");
@@ -250,7 +264,6 @@ public class SocioController extends HttpServlet {
 
             socio.setIdSocio(Integer.parseInt(idString.trim()));
 
-            // Llama a la lógica de actualización en el Service
             service.editar(socio);
             req.getSession().setAttribute("mensajeExito", "Socio actualizado correctamente");
             resp.sendRedirect("socios?accion=listar");
@@ -263,8 +276,6 @@ public class SocioController extends HttpServlet {
         }
     }
 
-    // ==================== MÉTODOS UTILITARIOS ====================
-
     private Socio construirSocioDesdeRequest(HttpServletRequest req) {
         Socio socio = new Socio();
         socio.setDocumento(req.getParameter("documento"));
@@ -272,13 +283,12 @@ public class SocioController extends HttpServlet {
         socio.setApellidos(req.getParameter("apellidos"));
         socio.setTelefono(req.getParameter("telefono"));
         socio.setCorreo(req.getParameter("correo"));
+
         String fechaNacString = req.getParameter("fechaNacimiento");
         if (fechaNacString != null && !fechaNacString.trim().isEmpty()) {
             try {
                 socio.setFechaNacimiento(LocalDate.parse(fechaNacString.trim()));
             } catch (DateTimeParseException e) {
-                // Si la fecha tiene formato incorrecto, se deja nula.
-                // El SocioService lanzará la excepción correspondiente al validarlo.
                 socio.setFechaNacimiento(null);
             }
         }
@@ -287,7 +297,7 @@ public class SocioController extends HttpServlet {
         if (activoParam != null) {
             socio.setActivo(Boolean.parseBoolean(activoParam));
         } else {
-            socio.setActivo(true); // Activo por defecto en inserciones
+            socio.setActivo(true);
         }
 
         return socio;

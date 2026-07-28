@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PlanDAO {
-    public boolean registrarPlan(Plan plan) throws SQLException {
 
+    public boolean registrarPlan(Plan plan) throws SQLException {
         String sql = "INSERT INTO Planes (nombre, duracion_dias, valor, activo) VALUES (?, ?, ?, ?)";
 
         try (Connection con = ConexionDB.obtenerConexion();
@@ -18,31 +18,23 @@ public class PlanDAO {
             ps.setString(1, plan.getNombre());
             ps.setInt(2, plan.getDuracionDias());
             ps.setBigDecimal(3, plan.getValor());
-            ps.setBoolean(4, plan.getActivo());
+            ps.setBoolean(4, plan.getActivo() != null ? plan.getActivo() : true);
 
             int filas = ps.executeUpdate();
-
             if (filas > 0) {
-
                 try (ResultSet rs = ps.getGeneratedKeys()) {
-
                     if (rs.next()) {
                         plan.setIdPlan(rs.getInt(1));
                     }
-
                 }
-
                 return true;
             }
-
             return false;
         }
     }
 
     public List<Plan> listarPlanes() throws SQLException {
-
         List<Plan> planes = new ArrayList<>();
-
         String sql = """
                 SELECT id_plan,
                        nombre,
@@ -58,21 +50,19 @@ public class PlanDAO {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-
                 planes.add(mapearPlan(rs));
-
             }
-
         }
-
         return planes;
-
     }
 
     public Plan buscarPorId(int idPlan) throws SQLException {
-
         String sql = """
-                SELECT *
+                SELECT id_plan,
+                       nombre,
+                       duracion_dias,
+                       valor,
+                       activo
                 FROM Planes
                 WHERE id_plan = ?
                 """;
@@ -83,26 +73,21 @@ public class PlanDAO {
             ps.setInt(1, idPlan);
 
             try (ResultSet rs = ps.executeQuery()) {
-
                 if (rs.next()) {
-
                     return mapearPlan(rs);
-
                 }
-
             }
-
         }
-
         return null;
-
     }
 
-
     public Plan buscarPorNombre(String nombre) throws SQLException {
-
         String sql = """
-                SELECT *
+                SELECT id_plan,
+                       nombre,
+                       duracion_dias,
+                       valor,
+                       activo
                 FROM Planes
                 WHERE nombre = ?
                 """;
@@ -113,26 +98,18 @@ public class PlanDAO {
             ps.setString(1, nombre);
 
             try (ResultSet rs = ps.executeQuery()) {
-
                 if (rs.next()) {
-
                     return mapearPlan(rs);
-
                 }
-
             }
-
         }
-
         return null;
-
     }
 
     public boolean inactivarPlan(int idPlan) throws SQLException {
-
         String sql = """
                 UPDATE Planes
-                SET activo = false
+                SET activo = 0
                 WHERE id_plan = ?
                 """;
 
@@ -140,15 +117,11 @@ public class PlanDAO {
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, idPlan);
-
             return ps.executeUpdate() > 0;
-
         }
-
     }
 
     public boolean editarPlan(Plan plan) throws SQLException {
-
         String sql = """
                 UPDATE Planes
                 SET nombre = ?,
@@ -164,27 +137,20 @@ public class PlanDAO {
             ps.setString(1, plan.getNombre());
             ps.setInt(2, plan.getDuracionDias());
             ps.setBigDecimal(3, plan.getValor());
-            ps.setBoolean(4, plan.getActivo());
+            ps.setBoolean(4, plan.getActivo() != null ? plan.getActivo() : true);
             ps.setInt(5, plan.getIdPlan());
 
             return ps.executeUpdate() > 0;
-
         }
-
     }
 
-
     private Plan mapearPlan(ResultSet rs) throws SQLException {
-
         return new Plan(
-
                 rs.getInt("id_plan"),
                 rs.getString("nombre"),
                 rs.getInt("duracion_dias"),
                 rs.getBigDecimal("valor"),
                 rs.getBoolean("activo")
-
         );
-
     }
 }
