@@ -29,6 +29,13 @@
             color: #1e293b;
         }
 
+
+         .nav-link:hover, .nav-link.active {
+                    color: white !important;
+                    background: rgba(79, 70, 229, 0.3);
+                    transform: translateY(-2px);
+                }
+
         /* Navbar idéntico al listado */
         .navbar {
             background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%) !important;
@@ -218,7 +225,7 @@
     <!-- Menú de Navegación Mejorado (Idéntico al listado) -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="socios?accion=listar">
                 <i class="bi bi-lightning-charge-fill me-2"></i>FitCIMM
             </a>
             <button class="navbar-dark navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -227,18 +234,23 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="socios?accion=listar">
+                        <a class="nav-link" href="socios?accion=listar">
                             <i class="bi bi-people-fill me-1"></i> Socios
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="planes?accion=listar">
                             <i class="bi bi-card-checklist me-1"></i> Planes
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="ingresos?accion=pantalla">
                             <i class="bi bi-door-open-fill me-1"></i> Control de Ingresos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="reportes">
+                            <i class="bi bi-briefcase-fill me-1"></i> Reportes
                         </a>
                     </li>
                 </ul>

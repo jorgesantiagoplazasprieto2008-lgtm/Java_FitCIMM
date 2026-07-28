@@ -472,7 +472,7 @@
     <!-- Menú de Navegación Mejorado -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">
+            <a class="navbar-brand" href="socios?accion=listar">
                 <i class="bi bi-lightning-charge-fill me-2"></i>FitCIMM
             </a>
             <button class="navbar-dark navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -486,7 +486,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="planes?accion=listar">
                             <i class="bi bi-card-checklist me-1"></i> Planes
                         </a>
                     </li>
@@ -495,6 +495,11 @@
                             <i class="bi bi-door-open-fill me-1"></i> Control de Ingresos
                         </a>
                     </li>
+                     <li class="nav-item">
+                        <a class="nav-link" href="reportes">
+                            <i class="bi bi-briefcase-fill me-1"></i> Reportes
+                        </a>
+                     </li>
                 </ul>
             </div>
         </div>
@@ -533,7 +538,7 @@
             <!-- Buscador y Filtros Mejorado -->
             <form action="socios" method="GET" class="row g-3 mb-4">
                 <input type="hidden" name="accion" value="listar">
-                <div class="col-md-8">
+                <div class="col-md-6">
                     <div class="search-box">
                         <div class="input-group">
                             <span class="input-group-text">
@@ -545,6 +550,11 @@
                             </button>
                         </div>
                     </div>
+                </div>
+                <div class="col-md-4 d-flex gap-2">
+                    <a href="socios?accion=porVencer" class="btn ${filtroActivo == 'porVencer' ? 'btn-warning' : 'btn-outline-warning text-dark'} w-100 fw-semibold d-flex align-items-center justify-content-center border-2 rounded-3">
+                        <i class="bi bi-exclamation-triangle-fill me-1 text-warning"></i>Por Vencer (5 días)
+                    </a>
                 </div>
                 <c:if test="${not empty criterio}">
                     <div class="col-md-2">
@@ -606,6 +616,11 @@
                                 </td>
                                 <td class="text-center">
                                     <div class="btn-group" role="group">
+                                        <!-- Botón Ver Detalle (Redirige a la ficha técnica e historial) -->
+                                        <a href="socios?accion=ver&id=${socio.idSocio}" class="btn btn-sm btn-outline-info px-3 text-dark" title="Ver detalles e historial">
+                                           <i class="bi bi-eye-fill text-info"></i>
+                                        </a>
+
                                         <!-- Botón Editar (siempre visible) -->
                                         <a href="socios?accion=editar&id=${socio.idSocio}" class="btn btn-sm btn-outline-primary px-3" title="Editar socio">
                                             <i class="bi bi-pencil-square"></i>
@@ -653,7 +668,7 @@
         </div>
     </div>
 
-    <!-- Script de confirmación -->
+    <!-- Script de confirmación de funciones (Inactivar y Reactivar) -->
     <script>
            function confirmarInactivacion(id, nombre) {
                if (confirm("¿Está seguro de que desea inactivar al socio " + nombre + "? Esta acción realiza una baja lógica en el sistema.")) {
