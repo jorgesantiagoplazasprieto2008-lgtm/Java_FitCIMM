@@ -102,7 +102,7 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="socios?accion=listar"><i class="bi bi-people-fill me-1"></i> Socios</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-card-checklist me-1"></i> Planes</a></li>
+                    <li class="nav-item"><a class="nav-link" href="planes?accion=listar"><i class="bi bi-card-checklist me-1"></i> Planes</a></li>
                     <li class="nav-item"><a class="nav-link" href="ingresos?accion=pantalla"><i class="bi bi-door-open-fill me-1"></i> Control de Ingresos</a></li>
                     <li class="nav-item"><a class="nav-link active" href="reportes-dashboard.jsp"><i class="bi bi-briefcase-fill me-1"></i> Reportes</a></li>
                 </ul>

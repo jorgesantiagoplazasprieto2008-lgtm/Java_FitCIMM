@@ -239,7 +239,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">
+                        <a class="nav-link" href="planes?accion=listar">
                             <i class="bi bi-card-checklist me-1"></i> Planes
                         </a>
                     </li>
