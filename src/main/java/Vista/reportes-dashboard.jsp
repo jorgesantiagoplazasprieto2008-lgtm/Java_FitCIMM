@@ -124,7 +124,7 @@
             <div class="col-md-4">
                 <div class="card dashboard-card kpi-card h-100 d-flex flex-column justify-content-between">
                     <div>
-                        <span class="text-white text-opacity-75 uppercase small fw-bold">Plan más vendido del mes (RF-17)</span>
+                        <span class="text-white text-opacity-75 uppercase small fw-bold">Plan más vendido del mes</span>
                         <h4 class="fw-bold mt-2">${empty planMasVendido ? 'Sin ventas' : planMasVendido.nombrePlan}</h4>
                     </div>
                     <div class="mt-3">
@@ -138,7 +138,7 @@
             <div class="col-md-4">
                 <div class="card dashboard-card h-100 d-flex flex-column justify-content-between">
                     <div>
-                        <span class="text-muted uppercase small fw-bold">Socios Vigentes (RF-15)</span>
+                        <span class="text-muted uppercase small fw-bold">Socios Vigentes</span>
                         <h4 class="fw-bold text-dark mt-2">Membresía activa hoy</h4>
                     </div>
                     <div class="mt-3">
