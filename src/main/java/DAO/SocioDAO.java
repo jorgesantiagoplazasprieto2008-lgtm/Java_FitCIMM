@@ -2,8 +2,12 @@ package DAO;
 
 import Modelo.Socio;
 import Util.*;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -154,6 +158,8 @@ public class SocioDAO {
             }
         }
     }
+
+
 
     private Socio mapearSocio(ResultSet rs) throws SQLException {
         return new Socio(

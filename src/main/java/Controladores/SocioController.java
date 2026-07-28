@@ -1,7 +1,8 @@
 package Controladores;
 
+import DAO.*;
 import Modelo.*;
-import Servicios.SocioService;
+import Servicios.*;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,6 +17,8 @@ import java.util.List;
 @WebServlet("/socios")
 public class SocioController extends HttpServlet {
     private final SocioService service = new SocioService();
+    private final MembresiaService Mservice = new MembresiaService();
+    private final MembresiaDAO MemDao = new MembresiaDAO();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -203,7 +206,14 @@ public class SocioController extends HttpServlet {
                 return;
             }
 
+            List<Membresia> historial = MemDao.listarHistorialPorSocio(id);
+            for(Membresia m : historial) {
+                m.setNombrePlan(m.getNombrePlan());
+            }
+
+
             req.setAttribute("socio", socio);
+            req.setAttribute("historial", historial);
             req.getRequestDispatcher("/socio-detalle.jsp").forward(req, resp);
         } catch (Exception e) {
             req.setAttribute("error", "Error al ver el detalle: " + e.getMessage());
@@ -262,8 +272,6 @@ public class SocioController extends HttpServlet {
         socio.setApellidos(req.getParameter("apellidos"));
         socio.setTelefono(req.getParameter("telefono"));
         socio.setCorreo(req.getParameter("correo"));
-
-        // Se reemplaza java.util.Date y DATE_FORMAT por LocalDate nativo
         String fechaNacString = req.getParameter("fechaNacimiento");
         if (fechaNacString != null && !fechaNacString.trim().isEmpty()) {
             try {

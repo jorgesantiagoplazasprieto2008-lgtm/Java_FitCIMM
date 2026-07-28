@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <!-- Aclaración: Diseño creado por IA: Antigravity -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FitCIMM - Control de Acceso</title>
@@ -142,6 +143,11 @@
             border-radius: 16px;
             padding-right: 5px;
         }
+         .nav-link:hover, .nav-link.active {
+                    color: white !important;
+                    background: rgba(79, 70, 229, 0.3);
+                    transform: translateY(-2px);
+                }
 
         /* Animación */
         @keyframes bounceIn {
@@ -163,7 +169,7 @@
     <!-- Menú de Navegación -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="#"><i class="bi bi-lightning-charge-fill me-2"></i>FitCIMM</a>
+            <a class="navbar-brand" href="socios?accion=listar"><i class="bi bi-lightning-charge-fill me-2"></i>FitCIMM</a>
             <button class="navbar-dark navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -172,6 +178,7 @@
                     <li class="nav-item"><a class="nav-link" href="socios?accion=listar"><i class="bi bi-people-fill me-1"></i> Socios</a></li>
                     <li class="nav-item"><a class="nav-link" href="#"><i class="bi bi-card-checklist me-1"></i> Planes</a></li>
                     <li class="nav-item"><a class="nav-link active" href="ingresos?accion=pantalla"><i class="bi bi-door-open-fill me-1"></i> Control de Ingresos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="reportes"><i class="bi bi-briefcase-fill me-1"></i> Reportes</a></li>
                 </ul>
             </div>
         </div>
