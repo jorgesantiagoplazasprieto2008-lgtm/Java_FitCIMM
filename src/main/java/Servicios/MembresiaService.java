@@ -26,12 +26,19 @@ public class MembresiaService {
         }
 
         LocalDate inicio = LocalDate.now();
-        LocalDate fin = inicio.plusDays(plan.getDuracionDias()); // RN-02: Cálculo automático de fecha de fin
+        LocalDate FechaInicio;
+        Membresia ultima = membresiaDao.obtenerUltimaPorSocio(idSocio);
+        if (ultima != null && !ultima.getFechaFin().isBefore(inicio)) {
+            FechaInicio = ultima.getFechaFin().plusDays(1);
+        } else  {
+            FechaInicio = inicio;
+        }
+        LocalDate fin = FechaInicio.plusDays(plan.getDuracionDias());
 
         Membresia m = new Membresia();
         m.setIdSocio(idSocio);
         m.setIdPlan(plan.getIdPlan());
-        m.setFechaInicio(inicio);
+        m.setFechaInicio(FechaInicio);
         m.setFechaFin(fin);
         m.setValorPagado(plan.getValor());
 
@@ -40,8 +47,6 @@ public class MembresiaService {
 
     // RF-10: Renovar la membresía de un socio, conservando el registro anterior en el historial.
     public void renovar(int idSocio, int idPlan) throws Exception {
-        // Al renovar se realiza una nueva inserción registrando la venta del nuevo plan,
-        // garantizando así la conservación de los registros históricos anteriores.
         vender(idSocio, idPlan);
     }
 
