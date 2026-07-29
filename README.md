@@ -17,6 +17,7 @@ Pasos de instalacion
 - Clonar el repositorio mediante el enlace -> https://github.com/jorgesantiagoplazasprieto2008-lgtm/Java_FitCIMM.git
 - Configurar el recurso de la base de datos para su uso en el IDE
 - Editar la configuracion de depuracion el IDE usando el plugin "SmartTomcat", posteriormente indicar la ubicacion de la carpeta en la que se encuentra la version de tomcat mensionada en los requisitos previos y por ultimo indicar la carpeta del proyecto denominada "Vista" para su uso.
+- al ejecutarse, escribir en el navegador, al final de la URL "/socios"
 
   Modulo de socios (Listar)
 <img width="1600" height="723" alt="WhatsApp Image 2026-07-28 at 4 27 30 PM" src="https://github.com/user-attachments/assets/8b5648cc-9925-4db7-a53e-9e0ce08213c6" />
