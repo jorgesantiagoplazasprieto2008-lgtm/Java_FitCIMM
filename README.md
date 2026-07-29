@@ -1,5 +1,5 @@
 # Java_FitCIMM (Sisteme de gestion de socios y membresia)
-Software desarrollado para gimnasiio, con el fin de llevar el registro de membresias compradas por los socios a parti de los palnes ofrecidos por este mismo, gestionar el control de ingreso de los socios y administrar los planes que el gimnasion quiera proponer a sus socios en el momento que consideren.
+Software desarrollado para gimnasio, con el fin de llevar el registro de membresias compradas por los socios a partir de los planes ofrecidos por este mismo, gestionar el control de ingreso de los socios y administrar los planes que el gimnasio quiera proponer a sus socios en el momento que consideren.
 
 Integrantes
 - Dilan Adrian Lopez Linares
